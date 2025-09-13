@@ -149,7 +149,6 @@ RUST_LOG=debug cargo run -- --port 6666 --secret your-secret
 1. Fork the repository
 2. Create a feature branch
 4. Submit a pull request
-
+   
 ## License
-
-MIT License - see LICENSE file for details.
+This project is open source and available under the [MIT License](LICENSE).
