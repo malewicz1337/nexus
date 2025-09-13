@@ -108,60 +108,6 @@ async fn handle_custom_event(state: &AppState, payload: &WebhookPayload) -> Resu
 }
 ```
 
-## Deployment Options
-
-### Docker Deployment
-
-Create a `Dockerfile`:
-
-```dockerfile
-FROM rust:1.75 as builder
-WORKDIR /app
-COPY . .
-RUN cargo build --release
-
-FROM debian:bookworm-slim
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /app/target/release/github-webhook-service /usr/local/bin/
-EXPOSE 6666
-CMD ["github-webhook-service"]
-```
-
-### Railway/Render Deployment
-
-1. Connect your GitHub repository
-2. Set environment variable: `GITHUB_WEBHOOK_SECRET=your-secret`
-3. The service will auto-deploy on pushes
-
-### Self-hosted with systemd
-
-Create `/etc/systemd/system/github-webhook.service`:
-
-```ini
-[Unit]
-Description=GitHub Webhook Service
-After=network.target
-
-[Service]
-Type=simple
-User=webhook
-WorkingDirectory=/opt/github-webhook-service
-ExecStart=/opt/github-webhook-service/target/release/github-webhook-service --port 6666
-Environment=GITHUB_WEBHOOK_SECRET=your-secret-here
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-## Security Considerations
-
-- **Always use webhook secrets** in production
-- **Use HTTPS** for webhook URLs
-- **Validate payloads** before processing
-- **Rate limit** if handling high-volume repositories
-- **Log security events** for monitoring
-
 ## API Endpoints
 
 ### `POST /webhook`
